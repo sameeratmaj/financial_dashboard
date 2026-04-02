@@ -20,14 +20,14 @@ export default function TransactionModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-xl overflow-hidden rounded-[32px] border border-white/60 bg-white shadow-2xl shadow-slate-950/15 dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex items-center justify-between border-b border-slate-200/80 px-6 py-5 dark:border-slate-800">
+    <div className="fixed inset-0 z-40 flex items-end justify-center overflow-y-auto overflow-x-hidden bg-slate-950/45 p-0 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="mb-0 w-full max-h-[min(92dvh,calc(100dvh-env(safe-area-inset-bottom)-1rem))] max-w-xl overflow-y-auto overflow-x-hidden rounded-t-[28px] border border-white/60 border-b-0 bg-white shadow-2xl shadow-slate-950/15 dark:border-slate-800 dark:bg-slate-950 sm:mb-0 sm:max-h-[min(88dvh,720px)] sm:rounded-[32px] sm:border-b">
+        <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-4 dark:border-slate-800 sm:px-6 sm:py-5">
           <div>
             <p className="text-sm text-slate-500">
               {modal.mode === 'edit' ? 'Update existing entry' : 'Create a new transaction'}
             </p>
-            <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-50 sm:text-2xl">
               {modal.mode === 'edit' ? 'Edit Transaction' : 'Add Transaction'}
             </h3>
           </div>
@@ -40,7 +40,10 @@ export default function TransactionModal() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 px-4 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-6 sm:pb-6"
+        >
           <div className="grid gap-5 md:grid-cols-2">
             <label className="space-y-2">
               <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Date</span>

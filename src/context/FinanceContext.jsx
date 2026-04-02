@@ -215,6 +215,17 @@ export const FinanceProvider = ({ children }) => {
     [state.transactions]
   );
 
+  const recentTransactions = useMemo(
+    () =>
+      filterAndSortTransactions(state.transactions, {
+        search: '',
+        category: 'all',
+        type: 'all',
+        sortBy: 'date-desc',
+      }).slice(0, 5),
+    [state.transactions]
+  );
+
   const value = {
     ...state,
     categories,
@@ -223,6 +234,7 @@ export const FinanceProvider = ({ children }) => {
     trendData,
     categoryBreakdown,
     insights,
+    recentTransactions,
     setRole: (role) => dispatch({ type: 'set-role', payload: role }),
     toggleTheme: () => dispatch({ type: 'toggle-theme' }),
     setActiveView: (view) => dispatch({ type: 'set-active-view', payload: view }),

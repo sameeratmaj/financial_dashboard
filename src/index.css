@@ -6,16 +6,50 @@
   font-family: 'Inter', sans-serif;
   color: #0f172a;
   background: #f8fafc;
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: clip;
 }
+
+/* Phones: comfortable tap targets on fixed mobile nav */
+@media (max-width: 1023px) {
+  .mobile-dock-nav button {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 639px) {
+  .insights-marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
+  }
+}
+
 
 * {
   box-sizing: border-box;
@@ -25,4 +59,48 @@ button,
 input,
 select {
   font: inherit;
+}
+
+@keyframes insights-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.insights-marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}
+
+.insights-marquee-track {
+  width: max-content;
+  animation: insights-marquee-scroll 12s linear infinite;
+  will-change: transform;
+}
+
+.insights-marquee-track:hover,
+.insights-marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insights-marquee-track {
+    animation: none;
+    transform: none;
+  }
 }
