@@ -2,7 +2,7 @@ import { Moon, Plus, Sun } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
 export default function Navbar() {
-  const { currentRole, openAddModal, theme, toggleTheme } = useFinance();
+  const { currentDarkPalette, currentRole, openAddModal, theme, toggleTheme } = useFinance();
 
   return (
     <header className="mb-5 flex flex-col gap-4 rounded-3xl border border-white/60 bg-white/70 p-4 shadow-xl shadow-slate-900/5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/70 sm:mb-8 sm:rounded-[32px] sm:p-5 md:flex-row md:items-center md:justify-between">
@@ -33,7 +33,12 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openAddModal}
-            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 sm:w-auto dark:bg-emerald-400 dark:text-slate-950 dark:hover:bg-emerald-300"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 sm:w-auto"
+            style={
+              theme === 'dark'
+                ? { backgroundColor: currentDarkPalette.accent, color: '#fff' }
+                : undefined
+            }
           >
             <Plus size={16} />
             Add Transaction

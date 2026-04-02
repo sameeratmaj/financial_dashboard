@@ -7,13 +7,13 @@ const cards = [
     key: 'balance',
     label: 'Total Balance',
     icon: Wallet,
-    accent: 'from-slate-900 via-slate-800 to-slate-700 text-white dark:from-emerald-400 dark:via-emerald-300 dark:to-lime-200 dark:text-slate-950',
+    accent: 'from-slate-900 via-slate-800 to-slate-700 text-white dark:from-[#3b47ff] dark:via-[#6170ff] dark:to-[#93a0ff] dark:text-white',
   },
   {
     key: 'income',
     label: 'Total Income',
     icon: ArrowUpRight,
-    accent: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/20',
+    accent: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 dark:bg-[#3b47ff]/10 dark:text-[#93a0ff] dark:ring-[#3b47ff]/20',
   },
   {
     key: 'expenses',
@@ -24,7 +24,7 @@ const cards = [
 ];
 
 export default function SummaryCards() {
-  const { summary } = useFinance();
+  const { currentDarkPalette, setActiveView, summary, theme } = useFinance();
 
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
@@ -40,6 +40,22 @@ export default function SummaryCards() {
                 ? `bg-gradient-to-br ${card.accent}`
                 : `border border-white/60 ${card.accent}`
             }`}
+            style={
+              theme === 'dark'
+                ? card.key === 'balance'
+                  ? {
+                      backgroundImage: `linear-gradient(135deg, ${currentDarkPalette.accent}, ${currentDarkPalette.gradientMid}, ${currentDarkPalette.gradientEnd})`,
+                      color: '#fff',
+                    }
+                  : card.key === 'income'
+                    ? {
+                        backgroundColor: currentDarkPalette.soft,
+                        color: currentDarkPalette.text,
+                        borderColor: currentDarkPalette.ring,
+                      }
+                    : undefined
+                : undefined
+            }
           >
             <div className="mb-6 flex items-start justify-between sm:mb-10">
               <div className="min-w-0 pr-2">
@@ -48,9 +64,20 @@ export default function SummaryCards() {
                   {formatCurrency(value)}
                 </h3>
               </div>
-              <div className="rounded-2xl bg-white/15 p-3 dark:bg-slate-950/10">
-                <Icon size={20} />
-              </div>
+              {card.key === 'balance' ? (
+                <button
+                  type="button"
+                  onClick={() => setActiveView('transactions')}
+                  className="rounded-2xl bg-white/15 p-3 transition hover:bg-white/20 dark:bg-slate-950/10 dark:hover:bg-slate-950/20"
+                  aria-label="Open transactions"
+                >
+                  <Icon size={20} />
+                </button>
+              ) : (
+                <div className="rounded-2xl bg-white/15 p-3 dark:bg-slate-950/10">
+                  <Icon size={20} />
+                </div>
+              )}
             </div>
             <p className="text-sm text-current/70">
               {card.key === 'balance'

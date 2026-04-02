@@ -11,11 +11,13 @@ export default function TransactionTable() {
   const {
     categories,
     currentRole,
+    currentDarkPalette,
     deleteTransaction,
     filteredTransactions,
     filters,
     openEditModal,
     setFilter,
+    theme,
   } = useFinance();
 
   const exportAsJson = () => {
@@ -149,9 +151,17 @@ export default function TransactionTable() {
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold ${
                           transaction.type === 'income'
-                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
+                            ? 'bg-emerald-50 text-emerald-700'
                             : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300'
                         }`}
+                        style={
+                          transaction.type === 'income' && theme === 'dark'
+                            ? {
+                                backgroundColor: currentDarkPalette.soft,
+                                color: currentDarkPalette.text,
+                              }
+                            : undefined
+                        }
                       >
                         {transaction.type}
                       </span>
@@ -208,9 +218,17 @@ export default function TransactionTable() {
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
                       transaction.type === 'income'
-                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
+                        ? 'bg-emerald-50 text-emerald-700'
                         : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300'
                     }`}
+                    style={
+                      transaction.type === 'income' && theme === 'dark'
+                        ? {
+                            backgroundColor: currentDarkPalette.soft,
+                            color: currentDarkPalette.text,
+                          }
+                        : undefined
+                    }
                   >
                     {transaction.type}
                   </span>

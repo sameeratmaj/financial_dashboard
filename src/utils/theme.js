@@ -1,0 +1,58 @@
+export const darkPalettes = {
+  cobalt: {
+    key: 'cobalt',
+    name: 'Cobalt',
+    accent: '#3b47ff',
+    hover: '#5360ff',
+    soft: 'rgba(59, 71, 255, 0.1)',
+    softStrong: 'rgba(59, 71, 255, 0.16)',
+    border: 'rgba(59, 71, 255, 0.4)',
+    ring: 'rgba(59, 71, 255, 0.2)',
+    text: '#93a0ff',
+    gradientMid: '#6170ff',
+    gradientEnd: '#93a0ff',
+  },
+  magenta: {
+    key: 'magenta',
+    name: 'Magenta',
+    accent: '#d946ef',
+    hover: '#e268f2',
+    soft: 'rgba(217, 70, 239, 0.1)',
+    softStrong: 'rgba(217, 70, 239, 0.16)',
+    border: 'rgba(217, 70, 239, 0.4)',
+    ring: 'rgba(217, 70, 239, 0.2)',
+    text: '#f0abfc',
+    gradientMid: '#e879f9',
+    gradientEnd: '#f5d0fe',
+  },
+  teal: {
+    key: 'teal',
+    name: 'Teal',
+    accent: '#14b8a6',
+    hover: '#2dd4bf',
+    soft: 'rgba(20, 184, 166, 0.1)',
+    softStrong: 'rgba(20, 184, 166, 0.16)',
+    border: 'rgba(20, 184, 166, 0.4)',
+    ring: 'rgba(20, 184, 166, 0.2)',
+    text: '#5eead4',
+    gradientMid: '#2dd4bf',
+    gradientEnd: '#99f6e4',
+  },
+  amber: {
+    key: 'amber',
+    name: 'Amber',
+    accent: '#f59e0b',
+    hover: '#fbbf24',
+    soft: 'rgba(245, 158, 11, 0.1)',
+    softStrong: 'rgba(245, 158, 11, 0.16)',
+    border: 'rgba(245, 158, 11, 0.4)',
+    ring: 'rgba(245, 158, 11, 0.2)',
+    text: '#fcd34d',
+    gradientMid: '#fbbf24',
+    gradientEnd: '#fde68a',
+  },
+};
+
+export const defaultDarkPaletteKey = 'cobalt';
+
+export const getDarkPalette = (key) => darkPalettes[key] ?? darkPalettes[defaultDarkPaletteKey];

@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { formatCompactCurrency, formatCurrency } from '../utils/finance';
+import { darkPalettes } from '../utils/theme';
 
 /** Vibrant, saturated slices for light mode */
 const PIE_COLORS_LIGHT = [
@@ -28,7 +29,7 @@ const PIE_COLORS_LIGHT = [
 
 /** Luminous slices — readable pop on dark backgrounds */
 const PIE_COLORS_DARK = [
-  '#34d399',
+  darkPalettes.cobalt.accent,
   '#fcd34d',
   '#38bdf8',
   '#f472b6',
@@ -38,13 +39,17 @@ const PIE_COLORS_DARK = [
 ];
 
 export default function ChartContainer() {
-  const { trendData, categoryBreakdown, theme } = useFinance();
+  const { categoryBreakdown, currentDarkPalette, theme, trendData, trendRange, setTrendRange } =
+    useFinance();
   const isPhone = useMediaQuery('(max-width: 639px)');
   const isTablet = useMediaQuery('(max-width: 1023px)');
 
   const pieColors = useMemo(
-    () => (theme === 'dark' ? PIE_COLORS_DARK : PIE_COLORS_LIGHT),
-    [theme]
+    () =>
+      theme === 'dark'
+        ? [currentDarkPalette.accent, ...PIE_COLORS_DARK.slice(1)]
+        : PIE_COLORS_LIGHT,
+    [currentDarkPalette.accent, theme]
   );
 
   const pieInner = isPhone ? 44 : isTablet ? 52 : 58;
@@ -55,6 +60,12 @@ export default function ChartContainer() {
     : isTablet
       ? { top: 8, right: 8, left: 0, bottom: 8 }
       : { top: 8, right: 16, left: 0, bottom: 8 };
+  const trendRangeLabels = {
+    daily: 'Daily net position',
+    weekly: 'Weekly net position',
+    monthly: 'Monthly net position',
+    yearly: 'Yearly net position',
+  };
 
   return (
     <>
@@ -66,7 +77,22 @@ export default function ChartContainer() {
               Balance Trend
             </h3>
           </div>
-          <p className="shrink-0 text-xs text-slate-500 sm:text-sm">Monthly net position</p>
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="text-xs text-slate-500 sm:text-sm">
+              {trendRangeLabels[trendRange]}
+            </span>
+            <select
+              value={trendRange}
+              onChange={(event) => setTrendRange(event.target.value)}
+              className="min-w-[7.5rem] cursor-pointer rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus-visible:ring-slate-600 sm:text-sm"
+              aria-label="Select trend range"
+            >
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
         </div>
 
         <div className="h-52 sm:h-64 md:h-72 lg:h-80">
@@ -74,8 +100,16 @@ export default function ChartContainer() {
             <AreaChart data={trendData} margin={areaMargins}>
               <defs>
                 <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
+                  <stop
+                    offset="5%"
+                    stopColor={theme === 'dark' ? currentDarkPalette.accent : '#10b981'}
+                    stopOpacity={0.4}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={theme === 'dark' ? currentDarkPalette.accent : '#10b981'}
+                    stopOpacity={0.02}
+                  />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" opacity={0.25} />
@@ -93,16 +127,25 @@ export default function ChartContainer() {
               />
               <Tooltip
                 formatter={(value) => formatCurrency(value)}
-                contentStyle={{
-                  borderRadius: '16px',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
-                  backgroundColor: 'rgba(255,255,255,0.96)',
-                }}
+                contentStyle={
+                  theme === 'dark'
+                    ? {
+                        borderRadius: '16px',
+                        border: '1px solid rgba(148, 163, 184, 0.25)',
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        color: '#f1f5f9',
+                      }
+                    : {
+                        borderRadius: '16px',
+                        border: '1px solid rgba(148, 163, 184, 0.2)',
+                        backgroundColor: 'rgba(255,255,255,0.96)',
+                      }
+                }
               />
               <Area
                 type="monotone"
                 dataKey="balance"
-                stroke="#10b981"
+                stroke={theme === 'dark' ? currentDarkPalette.accent : '#10b981'}
                 strokeWidth={3}
                 fill="url(#balanceGradient)"
               />

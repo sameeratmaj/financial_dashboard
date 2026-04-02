@@ -3,7 +3,8 @@ import { X } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
 export default function TransactionModal() {
-  const { modal, categories, closeModal, updateForm, saveTransaction } = useFinance();
+  const { modal, categories, closeModal, currentDarkPalette, saveTransaction, theme, updateForm } =
+    useFinance();
   const [error, setError] = useState('');
 
   if (!modal.open) {
@@ -145,7 +146,12 @@ export default function TransactionModal() {
             </button>
             <button
               type="submit"
-              className="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-emerald-400 dark:text-slate-950 dark:hover:bg-emerald-300"
+              className="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              style={
+                theme === 'dark'
+                  ? { backgroundColor: currentDarkPalette.accent, color: '#fff' }
+                  : undefined
+              }
             >
               {modal.mode === 'edit' ? 'Save changes' : 'Create transaction'}
             </button>

@@ -16,6 +16,17 @@ const monthFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 });
 
+const shortDayFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+});
+
+const longDayFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
 export const formatCurrency = (value) => currencyFormatter.format(value ?? 0);
 
 export const formatCompactCurrency = (value) =>
@@ -38,6 +49,65 @@ export const getMonthLabel = (monthKey) => {
   return monthFormatter.format(new Date(year, month - 1, 1));
 };
 
+const getYearKey = (date) => String(new Date(date).getFullYear());
+
+const getYearLabel = (yearKey) => yearKey;
+
+const getDayKey = (date) => new Date(date).toISOString().slice(0, 10);
+
+const getDayLabel = (dayKey) => longDayFormatter.format(new Date(`${dayKey}T00:00:00`));
+
+const getWeekStart = (date) => {
+  const value = new Date(date);
+  const normalized = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+  const day = normalized.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  normalized.setDate(normalized.getDate() + diff);
+  return normalized;
+};
+
+const getWeekKey = (date) => {
+  const weekStart = getWeekStart(date);
+  return weekStart.toISOString().slice(0, 10);
+};
+
+const getWeekLabel = (weekKey) => {
+  const weekStart = new Date(`${weekKey}T00:00:00`);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  return `${shortDayFormatter.format(weekStart)} - ${shortDayFormatter.format(weekEnd)}`;
+};
+
+const buildTrendConfig = (range) => {
+  switch (range) {
+    case 'daily':
+      return {
+        keyName: 'dayKey',
+        getKey: getDayKey,
+        getLabel: getDayLabel,
+      };
+    case 'weekly':
+      return {
+        keyName: 'weekKey',
+        getKey: getWeekKey,
+        getLabel: getWeekLabel,
+      };
+    case 'yearly':
+      return {
+        keyName: 'yearKey',
+        getKey: getYearKey,
+        getLabel: getYearLabel,
+      };
+    case 'monthly':
+    default:
+      return {
+        keyName: 'monthKey',
+        getKey: getMonthKey,
+        getLabel: getMonthLabel,
+      };
+  }
+};
+
 export const getSummaryTotals = (transactions) =>
   transactions.reduce(
     (acc, transaction) => {
@@ -53,29 +123,30 @@ export const getSummaryTotals = (transactions) =>
     { balance: 0, income: 0, expenses: 0 }
   );
 
-export const getTrendData = (transactions) => {
+export const getTrendData = (transactions, range = 'monthly') => {
+  const { keyName, getKey, getLabel } = buildTrendConfig(range);
   const grouped = new Map();
 
   [...transactions]
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .forEach((transaction) => {
-      const key = getMonthKey(transaction.date);
-      const month = grouped.get(key) ?? {
-        monthKey: key,
-        label: getMonthLabel(key),
+      const key = getKey(transaction.date);
+      const period = grouped.get(key) ?? {
+        [keyName]: key,
+        label: getLabel(key),
         income: 0,
         expenses: 0,
         balance: 0,
       };
 
       if (transaction.type === 'income') {
-        month.income += transaction.amount;
+        period.income += transaction.amount;
       } else {
-        month.expenses += transaction.amount;
+        period.expenses += transaction.amount;
       }
 
-      month.balance = month.income - month.expenses;
-      grouped.set(key, month);
+      period.balance = period.income - period.expenses;
+      grouped.set(key, period);
     });
 
   return [...grouped.values()];
@@ -97,7 +168,7 @@ export const getCategoryBreakdown = (transactions) => {
 export const getInsights = (transactions) => {
   const expenseCategories = getCategoryBreakdown(transactions);
   const topCategory = expenseCategories[0];
-  const trendData = getTrendData(transactions);
+  const trendData = getTrendData(transactions, 'monthly');
   const currentMonth = trendData.at(-1);
   const previousMonth = trendData.at(-2);
 

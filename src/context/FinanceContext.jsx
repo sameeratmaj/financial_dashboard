@@ -8,6 +8,7 @@ import {
   getSummaryTotals,
   getTrendData,
 } from '../utils/finance';
+import { defaultDarkPaletteKey, getDarkPalette } from '../utils/theme';
 
 const STORAGE_KEY = 'zorvyn-finance-dashboard';
 
@@ -33,7 +34,9 @@ const initialState = {
   transactions: mockTransactions,
   filters: defaultFilters,
   currentRole: 'admin',
+  trendRange: 'monthly',
   theme: 'light',
+  darkPalette: defaultDarkPaletteKey,
   activeView: 'overview',
   modal: {
     open: false,
@@ -64,6 +67,10 @@ const financeReducer = (state, action) => {
       return { ...state, currentRole: action.payload };
     case 'toggle-theme':
       return { ...state, theme: state.theme === 'dark' ? 'light' : 'dark' };
+    case 'set-trend-range':
+      return { ...state, trendRange: action.payload };
+    case 'set-dark-palette':
+      return { ...state, darkPalette: action.payload };
     case 'set-active-view':
       return { ...state, activeView: action.payload };
     case 'set-filter':
@@ -175,11 +182,21 @@ export const FinanceProvider = ({ children }) => {
         transactions: state.transactions,
         filters: state.filters,
         currentRole: state.currentRole,
+        trendRange: state.trendRange,
         theme: state.theme,
+        darkPalette: state.darkPalette,
         activeView: state.activeView,
       })
     );
-  }, [state.transactions, state.filters, state.currentRole, state.theme, state.activeView]);
+  }, [
+    state.transactions,
+    state.filters,
+    state.currentRole,
+    state.trendRange,
+    state.theme,
+    state.darkPalette,
+    state.activeView,
+  ]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', state.theme === 'dark');
@@ -201,8 +218,8 @@ export const FinanceProvider = ({ children }) => {
   );
 
   const trendData = useMemo(
-    () => getTrendData(state.transactions),
-    [state.transactions]
+    () => getTrendData(state.transactions, state.trendRange),
+    [state.transactions, state.trendRange]
   );
 
   const categoryBreakdown = useMemo(
@@ -235,7 +252,10 @@ export const FinanceProvider = ({ children }) => {
     categoryBreakdown,
     insights,
     recentTransactions,
+    currentDarkPalette: getDarkPalette(state.darkPalette),
     setRole: (role) => dispatch({ type: 'set-role', payload: role }),
+    setTrendRange: (range) => dispatch({ type: 'set-trend-range', payload: range }),
+    setDarkPalette: (palette) => dispatch({ type: 'set-dark-palette', payload: palette }),
     toggleTheme: () => dispatch({ type: 'toggle-theme' }),
     setActiveView: (view) => dispatch({ type: 'set-active-view', payload: view }),
     setFilter: (key, value) =>
