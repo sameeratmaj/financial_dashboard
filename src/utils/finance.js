@@ -171,6 +171,30 @@ export const getInsights = (transactions) => {
   const trendData = getTrendData(transactions, 'monthly');
   const currentMonth = trendData.at(-1);
   const previousMonth = trendData.at(-2);
+  const expenseTransactions = transactions.filter(
+    (transaction) => transaction.type === 'expense'
+  );
+  const incomeTransactions = transactions.filter(
+    (transaction) => transaction.type === 'income'
+  );
+  const largestExpense = expenseTransactions.reduce(
+    (largest, transaction) =>
+      !largest || transaction.amount > largest.amount ? transaction : largest,
+    null
+  );
+  const averageExpense =
+    expenseTransactions.length > 0
+      ? expenseTransactions.reduce((sum, transaction) => sum + transaction.amount, 0) /
+        expenseTransactions.length
+      : 0;
+  const spendingPace = averageExpense
+    ? `Average expense size is ${formatCurrency(averageExpense)} across ${expenseTransactions.length} transactions.`
+    : 'Add some expense entries to understand your average spending pace.';
+  const highestIncome = incomeTransactions.reduce(
+    (largest, transaction) =>
+      !largest || transaction.amount > largest.amount ? transaction : largest,
+    null
+  );
 
   const monthlyComparison = (() => {
     if (!currentMonth || !previousMonth || previousMonth.expenses === 0) {
@@ -214,6 +238,13 @@ export const getInsights = (transactions) => {
     observation: currentMonth
       ? `You have saved ${savingsRate}% of your income in ${currentMonth.label}.`
       : 'Add transactions to unlock spending observations.',
+    largestExpense: largestExpense
+      ? `Largest expense was ${formatCurrency(largestExpense.amount)} for ${largestExpense.description} on ${formatDisplayDate(largestExpense.date)}.`
+      : 'No expense activity yet to identify your largest outgoing transaction.',
+    spendingPace,
+    highestIncome: highestIncome
+      ? `Largest income entry was ${formatCurrency(highestIncome.amount)} from ${highestIncome.description} on ${formatDisplayDate(highestIncome.date)}.`
+      : 'No income activity yet to highlight your strongest inflow.',
   };
 };
 

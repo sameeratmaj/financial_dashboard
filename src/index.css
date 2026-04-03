@@ -93,6 +93,18 @@ select {
   will-change: transform;
 }
 
+.insights-marquee-scroll {
+  cursor: grab;
+  touch-action: pan-x;
+}
+
+.insights-marquee-scroll:active {
+  cursor: grabbing;
+}
+
+.insights-marquee-scroll:hover .insights-marquee-track,
+.insights-marquee-scroll:focus-within .insights-marquee-track,
+.insights-marquee-scroll:active .insights-marquee-track,
 .insights-marquee-track:hover,
 .insights-marquee-track:focus-within {
   animation-play-state: paused;

@@ -14,6 +14,7 @@ const STORAGE_KEY = 'zorvyn-finance-dashboard';
 
 const FinanceContext = createContext(null);
 
+// Default Filters for the Transaction Table
 const defaultFilters = {
   search: '',
   category: 'all',
@@ -21,6 +22,7 @@ const defaultFilters = {
   sortBy: 'date-desc',
 };
 
+// Default Form for the Transaction Modal
 const defaultForm = {
   id: null,
   date: new Date().toISOString().slice(0, 10),
@@ -30,10 +32,11 @@ const defaultForm = {
   description: '',
 };
 
+// Initial State for the Finance Context
 const initialState = {
   transactions: mockTransactions,
   filters: defaultFilters,
-  currentRole: 'admin',
+  currentRole: 'viewer',
   trendRange: 'monthly',
   theme: 'light',
   darkPalette: defaultDarkPaletteKey,
@@ -46,21 +49,25 @@ const initialState = {
   },
 };
 
-const buildFormState = (transaction) =>
-  transaction
-    ? {
-        id: transaction.id,
-        date: transaction.date,
-        amount: String(transaction.amount),
-        category: transaction.category,
-        type: transaction.type,
-        description: transaction.description,
-      }
-    : {
-        ...defaultForm,
-        date: new Date().toISOString().slice(0, 10),
-      };
+// Builds the form state for Add/Edit Transaction Modal
+const buildFormState = (transaction) =>{
+  return transaction ?
+    {
+      id: transaction.id,
+      date: transaction.date,
+      amount: String(transaction.amount),
+      category: transaction.category,
+      type: transaction.type,
+      description: transaction.description,
+    }
+    : 
+    {
+      ...defaultForm,
+      date: new Date().toISOString().slice(0, 10),
+    };
+  }
 
+// Reducer for the Finance Context
 const financeReducer = (state, action) => {
   switch (action.type) {
     case 'set-role':

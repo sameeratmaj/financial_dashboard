@@ -1,5 +1,12 @@
-import { ChevronRight, Lightbulb, TrendingDown, TrendingUp } from 'lucide-react';
-import { useSyncExternalStore } from 'react';
+import {
+  BadgeDollarSign,
+  ChevronRight,
+  Lightbulb,
+  ReceiptText,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
+import { useRef, useSyncExternalStore } from 'react';
 import { useFinance } from '../context/FinanceContext';
 
 const insightCards = [
@@ -17,6 +24,21 @@ const insightCards = [
     key: 'observation',
     title: 'Useful Observation',
     icon: Lightbulb,
+  },
+  {
+    key: 'largestExpense',
+    title: 'Largest Expense',
+    icon: ReceiptText,
+  },
+  {
+    key: 'spendingPace',
+    title: 'Spending Pace',
+    icon: TrendingUp,
+  },
+  {
+    key: 'highestIncome',
+    title: 'Highest Income',
+    icon: BadgeDollarSign,
   },
 ];
 
@@ -75,6 +97,47 @@ function InsightsSectionHeader({ showSeeAll }) {
 export default function InsightsPanel() {
   const { insights } = useFinance();
   const reduceMotion = usePrefersReducedMotion();
+  const scrollRef = useRef(null);
+  const dragStateRef = useRef({
+    active: false,
+    pointerId: null,
+    startX: 0,
+    startScrollLeft: 0,
+  });
+
+  const handlePointerDown = (event) => {
+    if (!scrollRef.current) {
+      return;
+    }
+
+    dragStateRef.current = {
+      active: true,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: scrollRef.current.scrollLeft,
+    };
+
+    scrollRef.current.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    if (!dragStateRef.current.active || !scrollRef.current) {
+      return;
+    }
+
+    const deltaX = event.clientX - dragStateRef.current.startX;
+    scrollRef.current.scrollLeft = dragStateRef.current.startScrollLeft - deltaX;
+  };
+
+  const handlePointerUp = (event) => {
+    if (!scrollRef.current || dragStateRef.current.pointerId !== event.pointerId) {
+      return;
+    }
+
+    dragStateRef.current.active = false;
+    dragStateRef.current.pointerId = null;
+    scrollRef.current.releasePointerCapture(event.pointerId);
+  };
 
   if (reduceMotion) {
     return (
@@ -95,7 +158,14 @@ export default function InsightsPanel() {
     <section className="overflow-hidden rounded-3xl border border-white/60 bg-white/40 p-4 shadow-xl shadow-slate-900/5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/50 sm:rounded-[32px] sm:p-5">
       <InsightsSectionHeader showSeeAll />
 
-      <div className="insights-marquee-mask relative -mx-2">
+      <div
+        ref={scrollRef}
+        className="insights-marquee-scroll insights-marquee-mask relative -mx-2 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
         <div className="insights-marquee-track flex gap-4 px-2 py-1">
           {loopItems.map((card, index) => (
             <InsightCard
