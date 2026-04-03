@@ -1,6 +1,6 @@
-# Zorvyn Finance Dashboard
+# Finance Dashboard
 
-A modular React + Vite finance dashboard built for the Zorvyn internship assignment. The UI is designed to feel like a modern fintech product, with a responsive layout, strong visual hierarchy, local persistence, role-based controls, and calculated insights generated from transaction data.
+A modular React + Vite finance dashboard. The UI is designed to feel like a modern fintech product, with a responsive layout, strong visual hierarchy, local persistence, role-based controls, and calculated insights generated from transaction data.
 
 ## Highlights
 
