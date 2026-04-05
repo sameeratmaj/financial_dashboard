@@ -1,4 +1,4 @@
-# Zorvyn Financial Dashboard
+# Financial Dashboard
 
 A responsive fintech-style dashboard for tracking income, expenses, balance trends, and transaction insights.
 
@@ -6,7 +6,7 @@ A responsive fintech-style dashboard for tracking income, expenses, balance tren
 
 ## Overview
 
-Zorvyn Financial Dashboard is a modern React + Vite project designed to feel like a practical personal finance product rather than a static assignment UI. It combines clean analytics, role-based interaction, responsive layouts, dynamic dark-mode palettes, and transaction-driven insights in a single dashboard experience.
+Financial Dashboard is a modern React + Vite project designed to feel like a practical personal finance product rather than a static assignment UI. It combines clean analytics, role-based interaction, responsive layouts, dynamic dark-mode palettes, and transaction-driven insights in a single dashboard experience.
 
 The project is built to be:
 
