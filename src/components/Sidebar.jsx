@@ -25,6 +25,7 @@ const mobileNavItems = navItems.filter(
   (item) =>
     !['transactions', 'risk-assessments', 'insights', 'support'].includes(item.id)
 );
+// Mobile uses a tighter subset so the bottom dock remains readable on small screens.
 
 export default function Sidebar() {
   const { activeView, currentDarkPalette, setActiveView, theme } = useFinance();

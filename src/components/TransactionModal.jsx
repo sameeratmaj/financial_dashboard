@@ -3,8 +3,7 @@ import { X } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
 export default function TransactionModal() {
-  const { modal, categories, closeModal, currentDarkPalette, saveTransaction, theme, updateForm } =
-    useFinance();
+  const { modal, categories, closeModal,currentDarkPalette, saveTransaction, theme, updateForm } = useFinance();
   const [error, setError] = useState('');
 
   if (!modal.open) {

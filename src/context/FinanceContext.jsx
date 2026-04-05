@@ -11,6 +11,7 @@ import {
 import { defaultDarkPaletteKey, getDarkPalette } from '../utils/theme';
 
 const STORAGE_KEY = 'zorvyn-finance-dashboard';
+const INACTIVITY_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
 const FinanceContext = createContext(null);
 
@@ -166,7 +167,20 @@ const loadPersistedState = () => {
 
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw);
+    const lastActiveAt = parsed?.lastActiveAt;
+
+    // Expired sessions are dropped so stale dashboard data does not linger forever.
+    if (!lastActiveAt || Date.now() - lastActiveAt > INACTIVITY_EXPIRY_MS) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+
+    return parsed.state ?? null;
   } catch {
     return null;
   }
@@ -183,16 +197,20 @@ export const FinanceProvider = ({ children }) => {
   );
 
   useEffect(() => {
+    // Persist only durable dashboard state; modal UI is rebuilt on demand.
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        transactions: state.transactions,
-        filters: state.filters,
-        currentRole: state.currentRole,
-        trendRange: state.trendRange,
-        theme: state.theme,
-        darkPalette: state.darkPalette,
-        activeView: state.activeView,
+        lastActiveAt: Date.now(),
+        state: {
+          transactions: state.transactions,
+          filters: state.filters,
+          currentRole: state.currentRole,
+          trendRange: state.trendRange,
+          theme: state.theme,
+          darkPalette: state.darkPalette,
+          activeView: state.activeView,
+        },
       })
     );
   }, [
@@ -206,6 +224,7 @@ export const FinanceProvider = ({ children }) => {
   ]);
 
   useEffect(() => {
+    // Tailwind dark utilities are activated by the root html class.
     document.documentElement.classList.toggle('dark', state.theme === 'dark');
   }, [state.theme]);
 
@@ -274,6 +293,7 @@ export const FinanceProvider = ({ children }) => {
     updateForm: (key, value) =>
       dispatch({ type: 'update-form', payload: { key, value } }),
     saveTransaction: () => {
+      // Centralized validation keeps add and edit flows consistent across the app.
       const amount = Number.parseFloat(state.modal.form.amount);
       if (Number.isNaN(amount) || amount <= 0) {
         return { ok: false, message: 'Amount must be greater than zero.' };

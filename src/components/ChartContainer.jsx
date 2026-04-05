@@ -81,6 +81,7 @@ export default function ChartContainer() {
             <span className="text-xs text-slate-500 sm:text-sm">
               {trendRangeLabels[trendRange]}
             </span>
+            {/* Changing the range updates how transactions are grouped before plotting. */}
             <select
               value={trendRange}
               onChange={(event) => setTrendRange(event.target.value)}
@@ -99,6 +100,7 @@ export default function ChartContainer() {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trendData} margin={areaMargins}>
               <defs>
+                {/* The area fill reuses the active theme accent as a softer gradient wash. */}
                 <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"

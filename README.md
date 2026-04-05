@@ -1,37 +1,83 @@
-# Zorvyn Finance Dashboard
+# Zorvyn Financial Dashboard
 
-A modular React + Vite finance dashboard built for the Zorvyn internship assignment. The UI is designed to feel like a modern fintech product, with a responsive layout, strong visual hierarchy, local persistence, role-based controls, and calculated insights generated from transaction data.
+A responsive fintech-style dashboard for tracking income, expenses, balance trends, and transaction insights.
 
-## Highlights
+[Live Demo](https://financialdashboard-ten.vercel.app)
 
-- Bento-style dashboard layout with responsive desktop and mobile navigation
-- Summary cards for total balance, income, and expenses
-- Recharts `AreaChart` for balance trend and `PieChart` for category breakdown
-- Search, filter, and sort controls for transaction management
-- Role switcher with `Admin` and `Viewer` modes
-- Add, edit, and delete transaction flows for admins
-- Read-only transaction experience for viewers
-- Local persistence with `localStorage`
-- Export current transaction view as CSV or JSON
-- Light and dark theme support
-- 29 seeded mock transactions for realistic initial state
+## Overview
+
+Zorvyn Financial Dashboard is a modern React + Vite project designed to feel like a practical personal finance product rather than a static assignment UI. It combines clean analytics, role-based interaction, responsive layouts, dynamic dark-mode palettes, and transaction-driven insights in a single dashboard experience.
+
+The project is built to be:
+
+- visually polished
+- mobile friendly
+- easy to explore
+- simple to extend
+
+## Key Features
+
+- Responsive application shell with desktop sidebar and mobile bottom navigation
+- Overview dashboard with balance, income, and expense summary cards
+- Interactive balance trend chart with daily, weekly, monthly, and yearly views
+- Spending-by-category visualization using Recharts
+- Auto-sliding insights panel with manual drag and swipe support
+- Full transaction management flow for add, edit, delete, filter, sort, and export
+- Role-based experience with `Admin` and `Viewer` modes
+- Theme switching with dark-mode palette customization
+- Local persistence using `localStorage`
+- 24-hour inactivity expiry for persisted dashboard state
+- Export filtered transactions as CSV or JSON
 
 ## Tech Stack
 
-- React with Vite
-- Tailwind CSS
-- Lucide React
-- Recharts
-- React Context API with `useReducer`
+| Category | Tools |
+| --- | --- |
+| Frontend | React 19, Vite |
+| Styling | Tailwind CSS |
+| Charts | Recharts |
+| Icons | Lucide React |
+| State Management | React Context API + `useReducer` |
+| Persistence | Browser `localStorage` |
+| Deployment | Vercel |
+
+## User Experience Highlights
+
+### Dashboard Views
+
+- `Overview` for quick financial snapshots
+- `Transactions` for detailed record management
+- `Insights` for transaction-based observations
+- `Settings` for role, theme, and dark palette controls
+
+### Theme System
+
+- Light mode uses a fresh green accent style
+- Dark mode supports switchable accent palettes
+- Palette selection updates major dark-mode surfaces like buttons, charts, highlights, and navigation
+
+### Insights Engine
+
+Insights are generated from transaction data instead of static placeholder copy. The dashboard currently surfaces:
+
+- highest spending category
+- monthly comparison
+- savings observation
+- largest expense
+- spending pace
+- highest income entry
 
 ## Project Structure
 
 ```text
 src/
+  assets/
   components/
     ChartContainer.jsx
     InsightsPanel.jsx
     Navbar.jsx
+    RecentTransactionsPreview.jsx
+    SettingsPanel.jsx
     Sidebar.jsx
     SummaryCards.jsx
     TransactionModal.jsx
@@ -40,95 +86,114 @@ src/
     FinanceContext.jsx
   data/
     mockTransactions.js
+  hooks/
+    useMediaQuery.js
   utils/
     finance.js
+    theme.js
   App.jsx
   index.css
   main.jsx
 ```
 
-## State Management Approach
+## How It Works
 
-The dashboard uses a centralized React Context provider backed by `useReducer`.
+### Global State
 
-It manages:
-
-- `transactions`: full transaction dataset, including user-created edits
-- `filters`: search, category, type, and sort configuration
-- `currentRole`: `admin` or `viewer`
-- `theme`: `light` or `dark`
-- `activeView`: overview, transactions, or insights
-- `modal`: add/edit modal state and current form values
-
-Derived dashboard data is computed with memoized selectors inside the provider:
-
-- summary totals
-- balance trend data
-- spending by category
-- filtered and sorted transaction list
-- insights such as highest spending category, monthly comparison, and savings observation
-
-## Role Switching
-
-Use the role switcher in the top navigation to change between:
-
-- `Admin`: can add, edit, delete, export, and manage transactions
-- `Viewer`: sees a read-only dashboard with hidden management actions
-
-This makes the RBAC behavior easy to demo during review.
-
-## Persistence
-
-The dashboard stores the following values in `localStorage` under `zorvyn-finance-dashboard`:
+The app uses a centralized `FinanceProvider` powered by `useReducer` to manage:
 
 - transactions
 - filters
 - current role
-- current theme
+- theme
+- dark palette
+- trend range
 - active view
+- modal state
 
-Any added or edited transactions persist after a page refresh.
+### Derived Analytics
 
-## Insights Logic
+The provider computes reusable derived values such as:
 
-The insights section is calculated from live transaction data instead of using static placeholder text.
+- summary totals
+- trend chart data
+- category breakdown
+- filtered transactions
+- recent transactions
+- insights
 
-- Highest Spending Category: computed from expense totals grouped by category
-- Monthly Comparison: compares the most recent month of expenses against the previous month
-- Useful Observation: calculates the current month's savings rate from income vs expenses
+This keeps the components focused on presentation while business logic stays in utility and context layers.
 
-## Local Setup
+## Local Development
 
-1. Install dependencies:
+### 1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-2. Start the development server:
+### 2. Start the development server
 
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
-3. Build for production:
+### 3. Build for production
 
-   ```bash
-   npm run build
-   ```
+```bash
+npm run build
+```
 
-## Demo Notes
+### 4. Preview the production build locally
 
-- The dashboard starts in `Admin` mode.
-- Use `Add Transaction` to create a record.
-- Use the edit and delete actions in the transaction table to manage entries.
-- Switch to `Viewer` mode to verify the read-only experience.
-- Use the export buttons to download the currently filtered transaction set.
+```bash
+npm run preview
+```
 
-## Technical Decisions
+## Demo Flow
 
-- React Context API was chosen to satisfy the assignment requirement without introducing extra complexity.
-- The reducer keeps transaction logic predictable and easier to document.
-- Derived calculations live in utility functions to keep components presentational and modular.
-- `localStorage` persistence improves the demo experience and shows real product thinking.
-- The mobile layout uses a bottom navigation pattern instead of a full sidebar to keep the interface touch-friendly.
+If you want to quickly explore the app, try this order:
+
+1. Open the overview dashboard
+2. Switch between light and dark mode in Settings
+3. Change the dark palette and watch the UI update
+4. Try the trend range selector on the balance chart
+5. Open Transactions and test search, filters, and export
+6. Switch between `Admin` and `Viewer` to see access differences
+7. Open the Insights section and drag the carousel manually
+
+## Persistence Behavior
+
+The dashboard stores user state in `localStorage` under the key `zorvyn-finance-dashboard`.
+
+Persisted data includes:
+
+- transactions
+- filters
+- role
+- theme
+- dark palette
+- active view
+- trend range
+
+To avoid stale local state, saved data expires after 24 hours of inactivity.
+
+## Why This Project Stands Out
+
+- Strong product-like UI instead of a plain CRUD assignment
+- Clear state architecture with Context + reducer
+- Reusable utility-driven analytics
+- Responsive behavior tailored for desktop, tablet, and mobile usage
+- Personalized dark-mode styling through palette selection
+
+## Future Improvements
+
+- recurring transaction detection
+- anomaly alerts for unusual spending spikes
+- budgets by category
+- authentication and real backend integration
+- downloadable reports and PDF summaries
+
+## Author
+
+Built by Sameer for the Zorvyn financial dashboard project.

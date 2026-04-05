@@ -105,6 +105,7 @@ export default function InsightsPanel() {
     startScrollLeft: 0,
   });
 
+  // Pointer dragging lets users manually scrub the same rail that auto-scrolls on its own.
   const handlePointerDown = (event) => {
     if (!scrollRef.current) {
       return;
@@ -143,6 +144,7 @@ export default function InsightsPanel() {
     return (
       <section className="rounded-3xl border border-white/60 bg-white/40 p-4 shadow-xl shadow-slate-900/5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/50 sm:rounded-[32px] sm:p-5">
         <InsightsSectionHeader showSeeAll />
+        {/* Reduced-motion users get a static grid instead of the marquee animation. */}
         <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
           {insightCards.map((card) => (
             <InsightCard key={card.key} card={card} text={insights[card.key]} />
@@ -153,6 +155,7 @@ export default function InsightsPanel() {
   }
 
   const loopItems = [...insightCards, ...insightCards];
+  // Duplicating the list allows the marquee to loop without a visible jump.
 
   return (
     <section className="overflow-hidden rounded-3xl border border-white/60 bg-white/40 p-4 shadow-xl shadow-slate-900/5 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/50 sm:rounded-[32px] sm:p-5">

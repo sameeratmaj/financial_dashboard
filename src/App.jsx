@@ -12,7 +12,7 @@ import {FinanceProvider,useFinance } from './context/FinanceContext';
 function DashboardShell() {
   const {activeView, currentDarkPalette, modal,theme } = useFinance();
 
-  // Creating a Dark theme background for dark mode by stacking gradients over each other..
+  // The app shell owns the page-wide background so dark palette changes apply everywhere.
   const appStyle = (theme === 'dark')?
       {
         backgroundImage: 
@@ -31,7 +31,7 @@ function DashboardShell() {
     >
 
 
-      {/* Main content of the dashboard starts here*/}
+      {/* Sidebar stays stable while the main panel swaps based on activeView. */}
       <div className="mx-auto flex max-w-[1600px] items-start">
         <Sidebar />
         <main className="min-h-screen min-w-0 max-w-full flex-1 overflow-x-clip px-3 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] pt-3 sm:px-5 sm:pt-4 md:px-6 lg:px-8 lg:pb-8 lg:pt-6">
@@ -39,7 +39,7 @@ function DashboardShell() {
           
           <div className="grid gap-3 sm:gap-4 md:gap-5">
             
-            {/* Conditional Rendering of the Content depending upon user's active view */}
+            {/* activeView acts like a lightweight in-app router for the dashboard sections. */}
 
             {
               (activeView === 'overview') ? (
@@ -70,6 +70,7 @@ function DashboardShell() {
 
 export default function App() {
   return (
+    // Provide one shared state container to the entire dashboard tree.
     <FinanceProvider>
       <DashboardShell />
     </FinanceProvider>

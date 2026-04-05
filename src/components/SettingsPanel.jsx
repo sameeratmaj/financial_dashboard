@@ -117,6 +117,7 @@ export default function SettingsPanel() {
           </div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {/* Palette selection is only meaningful in dark mode, so the picker stays conditional. */}
             {Object.values(darkPalettes).map((palette) => {
               const selected = darkPalette === palette.key;
               return (

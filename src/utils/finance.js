@@ -79,6 +79,7 @@ const getWeekLabel = (weekKey) => {
 };
 
 const buildTrendConfig = (range) => {
+  // Each chart range maps into the same output shape so the chart component stays simple.
   switch (range) {
     case 'daily':
       return {
@@ -131,6 +132,7 @@ export const getTrendData = (transactions, range = 'monthly') => {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .forEach((transaction) => {
       const key = getKey(transaction.date);
+      // Period buckets track both inflow/outflow totals and their resulting net balance.
       const period = grouped.get(key) ?? {
         [keyName]: key,
         label: getLabel(key),
@@ -230,6 +232,7 @@ export const getInsights = (transactions) => {
         )
       : 0;
 
+  // Insights are returned as plain display strings so UI components do not need extra formatting logic.
   return {
     topCategory: topCategory
       ? `${topCategory.name} leads spending at ${formatCurrency(topCategory.value)}.`

@@ -71,6 +71,7 @@ export default function SummaryCards() {
                   className="rounded-2xl bg-white/15 p-3 transition hover:bg-white/20 dark:bg-slate-950/10 dark:hover:bg-slate-950/20"
                   aria-label="Open transactions"
                 >
+                  {/* The balance card icon doubles as a shortcut into the transaction workspace. */}
                   <Icon size={20} />
                 </button>
               ) : (
